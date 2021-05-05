@@ -103,6 +103,26 @@ def ed3(numeroInicio):
 			string += ED3[int(x)]
 		return string
 
+def jsn(numeroInicio):
+	numeroInicio = baseABase(numeroInicio,"2","10")
+	string = ""
+	x = 0
+	n = 1
+	while (2*n)-1 < int(numeroInicio):
+		n+=1
+	if n > int(numeroInicio):
+		x = (2*n) - int(numeroInicio)
+		string += "0" * x
+		while len(string) < n:
+			
+			string += "1"
+	else:
+		x = (2*n) - int(numeroInicio)
+		string += "1" * x
+		while len(string) < n:
+			string += "0"
+	return string
+
 lectura = str(input())
 while(lectura != "-"):
 	lectura = lectura.split()
@@ -129,6 +149,10 @@ while(lectura != "-"):
 						n = ed3(n)
 						n = baseABase(n, "10", t)
 						print("Base {}: {}".format(t,n))
+					elif b == "jsn":
+						n = jsn(n)
+						n = baseABase(n, "2", t)
+						print("Base {}: {}".format(t,n))
 					else:
 						print("Entrada invalida")
 				else:
@@ -149,10 +173,15 @@ while(lectura != "-"):
 					n = ed3(n)
 					n = baseABase(n, "2", "2")
 					print("Código Exceso de 3: " + n)
+				elif t == "jsn":
+					n = baseABase(n, b, "2")
+					n = jsn(n)
+					print("Código Johnson: " + n)
 				else:
 					print("Entrada invalida")
 				
 		else:
 			print("Entrada invalida")
-	else: print("Entrada invalida")
+	else:
+		print("Entrada invalida")
 	lectura = input()
