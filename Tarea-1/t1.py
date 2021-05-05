@@ -114,7 +114,6 @@ def jsn(numeroInicio):
 		x = (2*n) - int(numeroInicio)
 		string += "0" * x
 		while len(string) < n:
-			
 			string += "1"
 	else:
 		x = (2*n) - int(numeroInicio)
@@ -122,6 +121,14 @@ def jsn(numeroInicio):
 		while len(string) < n:
 			string += "0"
 	return string
+
+def par(numeroInicio):
+	if len(re.findall(r"1", numeroInicio)) % 2 == 0:
+		return "1"
+	else:
+		return "0"
+
+print(par("1110"))
 
 lectura = str(input())
 while(lectura != "-"):
@@ -153,6 +160,10 @@ while(lectura != "-"):
 						n = jsn(n)
 						n = baseABase(n, "2", t)
 						print("Base {}: {}".format(t,n))
+					elif b == "par":
+						n = par(n)
+						n = baseABase(n, "2", t)
+						print("Base {}: {}".format(t,n))
 					else:
 						print("Entrada invalida")
 				else:
@@ -177,6 +188,10 @@ while(lectura != "-"):
 					n = baseABase(n, b, "2")
 					n = jsn(n)
 					print("Código Johnson: " + n)
+				elif t == "par":
+					n = baseABase(n,b,"2")
+					n = par(n)
+					print("Codigo Paridad: " + n)
 				else:
 					print("Entrada invalida")
 				
