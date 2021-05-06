@@ -128,7 +128,11 @@ def par(numeroInicio):
 	else:
 		return "0"
 
-print(par("1110"))
+def pbt(numeroInicio):
+	if len(numeroInicio)%5 == 0:
+		return "1"
+	else:
+		return "0"
 
 lectura = str(input())
 while(lectura != "-"):
@@ -164,6 +168,10 @@ while(lectura != "-"):
 						n = par(n)
 						n = baseABase(n, "2", t)
 						print("Base {}: {}".format(t,n))
+					elif b == "pbt":
+						n = pbt(n)
+						n = baseABase(n, "2", t)
+						print("Base {}: {}".format(t,n))
 					else:
 						print("Entrada invalida")
 				else:
@@ -192,6 +200,10 @@ while(lectura != "-"):
 					n = baseABase(n,b,"2")
 					n = par(n)
 					print("Codigo Paridad: " + n)
+				elif t == "pbt":
+					n = baseABase(n, b, "2")
+					n = pbt(n)
+					print("Código Pentabit: " + n)
 				else:
 					print("Entrada invalida")
 				
