@@ -130,9 +130,52 @@ def par(numeroInicio):
 
 def pbt(numeroInicio):
 	if len(numeroInicio)%5 == 0:
+		while len(numeroInicio)!=0:
+			if len(re.findall(r"1", numeroInicio[0:5])) !=2:
+				return "0"
+			numeroInicio = numeroInicio[5:]
 		return "1"
 	else:
 		return "0"
+
+'''
+def ham(numeroInicio):
+	n=0
+	vetados = []
+	vetados2 = []
+	while (2**n)<= (len(numeroInicio)+n):
+		vetados.append(2**n)
+		vetados2.append([2**n])
+		n+=1
+	lista = [None] * (len(numeroInicio) + n)
+	posicion = 0
+	for x in numeroInicio:
+		while (posicion+1) in vetados:
+			posicion+=1
+		lista[posicion] = x
+		posicion+=1
+	return lista
+'''
+
+def transformar(numeroInicio, codigo):
+	if codigo == "bcd":
+		numeroInicio = baseABase(numeroInicio, "2", "10")
+		return bcd(numeroInicio)
+	elif codigo == "gry":
+		return gry(numeroInicio)
+	elif codigo == "ed3":
+		numeroInicio = baseABase(numeroInicio, "2", "10")
+		return ed3(numeroInicio)
+	elif codigo == "jsn":
+		return jsn(numeroInicio)
+	elif codigo == "par":
+		return par(numeroInicio)
+	elif codigo == "pbt":
+		return pbt(numeroInicio)
+	elif codigo == "ham":
+		return ham(numeroInicio)
+
+#print(ham("010110101011"))
 
 lectura = str(input())
 while(lectura != "-"):
@@ -206,7 +249,26 @@ while(lectura != "-"):
 					print("Código Pentabit: " + n)
 				else:
 					print("Entrada invalida")
-				
+		elif baseOCodigo(b) == 0 and baseOCodigo(t) == 0 and esBinario(n):
+			if int(baseABase(n,"2","10")) <= 1000:
+				if t == "bcd":
+					print("Codigo BCD: " + transformar(transformar(n,b),t))
+				elif t == "gry":
+					print("Codigo Gray: " + transformar(transformar(n,b),t))
+				elif t == "ed3":
+					print("Codigo Exceso de 3: " + transformar(transformar(n,b),t))
+				elif t == "jsn":
+					print("Codigo Johnson: " + transformar(transformar(n,b),t))
+				elif t == "par":
+					print("Codigo Paridad: " + transformar(transformar(n,b),t))
+				elif t == "pbt":
+					print("Codigo PentaBit: " + transformar(transformar(n,b),t))
+				elif t == "ham":
+					print("Codigo Hamming: " + transformar(transformar(n,b),t))
+				else:
+					print("Entrada invalida")
+			else:
+				print("Entrada invalida")
 		else:
 			print("Entrada invalida")
 	else:
