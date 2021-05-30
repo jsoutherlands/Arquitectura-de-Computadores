@@ -1,0 +1,222 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[top = 2.5cm, bottom = 2.5cm, left = 2.5cm, right = 2.5cm]{geometry} 
+\usepackage[spanish]{babel} %Castellanización
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{setspace}
+\setlength{\parindent}{0in}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage[usenames]{color}
+%\documentclass[tikz, border=2mm]{standalone}
+\usepackage{karnaugh-map}
+\usepackage{graphicx,caption}
+\pagestyle{fancy}
+\fancyhf{}
+
+\lhead{\footnotesize INF245: Informe Tarea 1}%
+\rhead{\footnotesize José Southerland Silva - P200}
+\cfoot{\footnotesize \thepage} 
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle{empty} % This command disables the header on the first page. 
+
+  \begin{minipage}{.2\linewidth}
+    \begin{flushleft}
+      \includegraphics[height = 1.5cm]{Imagenes/UTFSM.jpg}
+    \end{flushleft} 
+  \end{minipage}
+  \hfill
+  \begin{minipage}{.7\linewidth}
+    \begin{flushright}
+        Universidad Técnica Federico Santa María \\
+        Departamento de Informática\\
+        INF245 - Arquitectura y Organización de Computadores\\
+    \end{flushright}
+  \end{minipage}
+%\begin{center}
+%    \hrule
+%\end{center}
+
+\vfill % Now we want to add some vertical space in between the line and our title.
+\begin{center}
+	{\huge Informe Tarea 1\\}
+	\vspace{.5cm}
+	\hrule
+	\vspace{.5cm}
+        % YOUR NAMES GO HERE
+	{\large José P. Southerland Silva}\\
+	jose.southerland@usm.cl\\
+	Rol 201973526-8\\
+	Paralelo 200\\
+	
+		
+\end{center}
+\vfill
+
+\newpage
+\tableofcontents
+\newpage
+\section{Tabla de verdad}
+Para la primera parte, determiné utilizar los números del mapa en formato binario de 4 bits. La salida, de 4 bits en One-Hot se interpretaba de la siguiente forma:
+\begin{itemize}
+    \item Norte: 1000
+    \item Oeste: 0100
+    \item Sur: 0010
+    \item Este: 0001
+\end{itemize}
+Con todos estos datos, finalmente la tabla de verdad quedó así:
+\begin{center}
+\begin{tabular}{c c c c | c c c c}
+    $A_3$ & $A_2$ & $A_1$ & $A_0$ & $S_3$ & $S_2$ & $S_1$ & $S_0$\\
+    \hline
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+    0 & 0 & 0 & 1 & 0 & 0 & 1 & 0\\
+    0 & 0 & 1 & 0 & 0 & 1 & 0 & 0\\
+    0 & 0 & 1 & 1 & 0 & 1 & 0 & 0\\
+    0 & 1 & 0 & 0 & 1 & 0 & 0 & 0\\
+    0 & 1 & 0 & 1 & 0 & 0 & 1 & 0\\
+    0 & 1 & 1 & 0 & 0 & 0 & 1 & 0\\
+    0 & 1 & 1 & 1 & 1 & 0 & 0 & 0\\
+    1 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
+    1 & 0 & 0 & 1 & 0 & 0 & 1 & 0\\
+    1 & 0 & 1 & 0 & 0 & 0 & 0 & 1\\
+    1 & 0 & 1 & 1 & 1 & 0 & 0 & 0\\
+    1 & 1 & 0 & 0 & 1 & 0 & 0 & 0\\
+    1 & 1 & 0 & 1 & 0 & 0 & 0 & 1\\
+    1 & 1 & 1 & 0 & 0 & 0 & 1 & 0\\
+    1 & 1 & 1 & 1 & 1 & 0 & 0 & 0\\
+\end{tabular}
+\end{center}
+\newpage
+\section{K-Maps y expresiones lógicas}
+
+Posteriormente ingresé la tabla de verdad al generador de Circuitos de Logisim, resultándome los siguientes Mapas de Karnaugh y expresiones en POS:\\
+\begin{minipage}{0.48\linewidth}
+    \begin{center}
+    \vspace{0.5cm}
+        \Large {K-Map de $S_3$}
+    \end{center}
+    \begin{karnaugh-map}[4][4][1][$A_3A_2$][$A_1A_0$]
+            \manualterms{0,0,0,0,1,0,0,1,1,0,0,1,1,0,0,1}
+            \implicant{4}{12}
+            \implicant{12}{8}
+            \implicant{7}{15}
+            \implicant{15}{11}
+    \end{karnaugh-map}
+    \centering $S_3= A_2 \overline{A_1}\overline{A_0}+A_2A_1A_0+A_3\overline{A_1}\overline{A_0}+A_3A_1A_0$
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\linewidth}
+    \begin{center}
+    \vspace{0.5cm}
+        \Large {K-Map de $S_2$}
+    \end{center}
+    \begin{karnaugh-map}[4][4][1][$A_3A_2$][$A_1A_0$]
+            \manualterms{0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0}
+            \implicant{3}{2}
+    \end{karnaugh-map}
+    \centering $S_2=\overline{A_3} \overline{A_2}A_1$
+\end{minipage}
+\begin{minipage}{0.48\linewidth}
+    \begin{center}
+    \vspace{1.5cm}
+        \Large {K-Map de $S_1$}
+    \end{center}
+    \begin{karnaugh-map}[4][4][1][$A_3A_2$][$A_1A_0$]
+            \manualterms{0,1,0,0,0,1,1,0,0,1,0,0,0,0,1,0}
+            \implicant{1}{5}
+            \implicant{6}{14}
+            \implicantedge{1}{1}{9}{9}
+    \end{karnaugh-map}
+    \centering $S_1= \overline{A_3}\overline{A_1}A_0+\overline{A_2}\overline{A_1}A_0+A_2A_1\overline{A_0}$
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\linewidth}
+    \begin{center}
+    \vspace{1.5cm}
+        \Large {K-Map de $S_0$}
+    \end{center}
+    \begin{karnaugh-map}[4][4][1][$A_3A_2$][$A_1A_0$]
+            \manualterms{1,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0}
+            \implicant{0}{0}
+            \implicant{13}{13}
+            \implicant{10}{10}
+    \end{karnaugh-map}
+    \centering $S_0=\overline{A_3A_2A_1A_0}+A_3\overline{A_2}A_1\overline{A_0}+A_3A_2\overline{A_1}A_0$
+\end{minipage}
+
+\newpage
+
+\section{Implementación de botones}
+
+Luego de creado el circuito en Logisim, quité los 4 pines que se habían insertado automáticamente (correspondientes a $A_3$, $A_2$, $A_1$ y $A_0$), reemplazándolos por 4 compuertas OR de 8 entradas cada una, que recibían a su vez 16 botones codificados para reemplazar correctamente a los 4 pines iniciales.
+
+\begin{minipage}[t]{0.4\linewidth}
+   \vspace{2ex}
+   \begin{center}
+       \includegraphics[width = 2.5cm]{Imagenes/Pines.png}
+   \captionof{figure}{Circuito inicial con pines.}
+   \end{center}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.4\linewidth}
+   \vspace{2ex}
+   \begin{center}
+        \includegraphics[width = 5cm]{Imagenes/Botones.png}
+        \captionof{figure}{Circuito con botones.}
+   \end{center}
+   
+\end{minipage}
+\newpage
+Un caso especial fue el botón "0", dado que al no haber ningún botón apretado, la led que representaba su dirección se seleccionaba de manera automática. Para solucionarlo, aumenté en una entrada la compuerta AND que activaba al 0, conectándolo directamente con el botón y logrando solucionar dicho problema. Para ser más gráfico:
+
+\begin{minipage}[t]{0.4\linewidth}
+   \vspace{2ex}
+   \includegraphics[width = 5cm]{Imagenes/Antes.png}
+   \captionof{figure}{$S_0$ inicial con pines.}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.4\linewidth}
+   \vspace{2ex}
+   \includegraphics[width = 6.3cm]{Imagenes/Despues.png}
+   \captionof{figure}{$S_0$ arreglado con botón "0".}
+\end{minipage}
+
+\section{Implementación de LEDs}
+
+Para el Output, utilicé una LED Matrix de 4 luces y 4 entradas. Cada entrada está conectada a cada una de las salidas $S$ del circuito. Cuando una de las 4 luces se pone de color verde (\colorbox{green}{ }), quiere decir que dicho output tiene un valor de 1. A modo de simbología:
+\begin{center}
+\begin{tabular}{c|c|c}
+    Secuencia & One-Hot & Dirección\\
+    \hline
+    \colorbox{green}{ }\colorbox{black}{ }\colorbox{black}{ }\colorbox{black}{ } & 1000 & Norte \\
+    \colorbox{black}{ }\colorbox{green}{ }\colorbox{black}{ }\colorbox{black}{ } & 0100 & Oeste \\
+    \colorbox{black}{ }\colorbox{black}{ }\colorbox{green}{ }\colorbox{black}{ } & 0010 & Sur \\
+    \colorbox{black}{ }\colorbox{black}{ }\colorbox{black}{ }\colorbox{green}{ } & 0001 & Este \\
+\end{tabular}
+\end{center}
+
+\newpage
+
+\section{Circuito final}
+Dadas todas las indicaciones anteriores de cómo hice el circuito, me quedó de la siguiente forma:
+
+\begin{minipage}[t]{1\linewidth}
+    \vspace{2ex}
+    \begin{center}
+        \includegraphics[width=16cm]{Imagenes/Circuito.png}
+        \captionof{figure}{Circuito final (\texttt{tarea1.circ)}.}
+    \end{center}
+    
+\end{minipage}
+    
+\end{document}
