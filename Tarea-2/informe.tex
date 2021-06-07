@@ -1,0 +1,490 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[top = 2.5cm, bottom = 2.5cm, left = 2.5cm, right = 2.5cm]{geometry} 
+\usepackage[spanish]{babel} %Castellanización
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb, amsmath}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{setspace}
+\setlength{\parindent}{0.25in}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage[usenames]{color}
+%\documentclass[tikz, border=2mm]{standalone}
+\usepackage{karnaugh-map}
+\usepackage{graphicx,caption}
+\usepackage{verbatim}
+\usepackage{hyperref}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\pagestyle{fancy}
+\fancyhf{}
+
+\lhead{\footnotesize INF245: Informe Tarea 2}%
+\rhead{\footnotesize José Southerland Silva - P200}
+\cfoot{\footnotesize \thepage} 
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle{empty} % This command disables the header on the first page. 
+
+  \begin{minipage}{.2\linewidth}
+    \begin{flushleft}
+      \includegraphics[height = 1.5cm]{Imagenes/UTFSM.jpg}
+    \end{flushleft} 
+  \end{minipage}
+  \hfill
+  \begin{minipage}{.7\linewidth}
+    \begin{flushright}
+        Universidad Técnica Federico Santa María \\
+        Departamento de Informática\\
+        INF245 - Arquitectura y Organización de Computadores\\
+    \end{flushright}
+  \end{minipage}
+%\begin{center}
+%    \hrule
+%\end{center}
+
+\vfill % Now we want to add some vertical space in between the line and our title.
+\begin{center}
+	{\Large Informe Tarea 2\\}
+	{\huge Funciones y operaciones en circuitos combinacionales con representación hexadecimal\\}
+	\vspace{.5cm}
+	\hrule
+	\vspace{.5cm}
+        % YOUR NAMES GO HERE
+	{\large José P. Southerland Silva}\\
+	jose.southerland@usm.cl\\
+	Rol 201973526-8\\
+	Paralelo 200\\
+	
+\end{center}
+\vfill
+\newpage
+
+\section{Resumen}
+La tarea consistía en crear un gran circuito con 3 entradas: T, de 1 bit, A, de 4 bits, y B, de 4 bits. La salida de este circuito depende de T: si T vale 0, debe sumar A y B sin el carry del dígito más significativo, mientras que si T es 1, debe realizar una serie de funciones a describir más adelante con dos funciones: $f$ y $g$.\\
+
+La salida debe ser mostrada mediante luces LED que muestren el resultado de A y B en hexadecimal. En este caso también se crea otro circuito: conversor Hexadecimal, para poder ver de mejor forma cuáles LEDs deben encenderse de acuerdo a cada caso. Algunos resultados obtenidos se pueden ver en el apartado de Resultados de este informe, demostrando claramente que el objetivo de esta tarea fue cumplido a cabalidad.
+
+\section{Introducción}
+
+Para la presente tarea, utilizaremos circuitos combinacionales. Los circuitos combinacionales nos permiten realizar operaciones binarias utilizando funciones (o compuertas) booleanas, como lo son \texttt{AND}, \texttt{OR}, \texttt{XOR}, \texttt{NOT} y muchas otras más.\\
+
+Otra herramienta a utilizar, y que a mí parecer es la más poderosa, es el software Logisim, que permite modelar de manera práctica lo que se pide en la tarea, mediante el uso de opciones como analizar circuitos, minimización de circuitos y agregación de compuertas manualmente, además de poder hacer subcircuitos.
+
+\section{Desarrollo}
+
+Para una mejor explicación de esta tarea, decidí separar el desarrollo en tres grandes secciones: el desarrollo para cuando T es 0, cuando T es 1 y la conversión del resultado final a hexadecimal para mostrarla mediante el uso de luces LED.
+
+\subsection{Desarrollo para cuando T es 0}
+
+De acuerdo a lo señalado por la tarea, si el valor T es igual a 0, entonces el resultado de la suma de A y B, dos binarios de 4 bits cada uno, sin considerar el carry final.\\
+
+Para representar esto, decidí crear un circuito aparte (en la tarea se llama \texttt{amasb}) que sumara tomando en cuenta el bit ingresado de A, el bit ingresado de B y un Carry que fuese proporcionado. Su salida, en tanto, debía ser el resultado de dicha suma y un carry. La tabla de verdad resultante fue la siguiente:
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c c c | c c}
+        A & B & C & $S_1$ & $S_0$\\ \hline
+        0 & 0 & 0 & 0 & 0\\
+        0 & 0 & 1 & 1 & 0\\
+        0 & 1 & 0 & 1 & 0\\
+        0 & 1 & 1 & 0 & 1\\
+        1 & 0 & 0 & 1 & 0\\
+        1 & 0 & 1 & 0 & 1\\
+        1 & 1 & 0 & 0 & 1\\
+        1 & 1 & 1 & 1 & 1\\
+    \end{tabular}
+    \caption{Tabla de verdad de \texttt{amasb}.}
+    \label{tab:amasb}
+\end{table}
+\newpage
+Los mapas de Karnaugh en este caso y sus respectivas fórmulas fueron:\\
+\begin{minipage}{0.48\linewidth}
+    \begin{center}
+    \vspace{0.5cm}
+        \Large {K-Map de $S_1$}
+    \end{center}
+    \begin{karnaugh-map}[4][2][1][$B,C$][$A$]
+            \manualterms{0,1,1,0,1,0,0,1}
+            \implicant{2}{2}
+            \implicant{1}{1}
+            \implicant{4}{4}
+            \implicant{7}{7}
+    \end{karnaugh-map}
+    \centering $S_1= \overline{A} \cdot \overline{B} +\overline{A} \cdot B \cdot \overline{C} + A \cdot \overline{B} \cdot \overline{C}$
+    \vspace{1cm}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\linewidth}
+    \begin{center}
+    \vspace{0.5cm}
+        \Large {K-Map de $S_0$}
+    \end{center}
+    \begin{karnaugh-map}[4][2][1][$B,C$][$A$]
+            \manualterms{0,0,0,1,0,1,1,1}
+            \implicant{3}{7}
+            \implicant{5}{7}
+            \implicant{7}{6}
+    \end{karnaugh-map}
+    \centering $S_0=B\cdot C+A\cdot C+A\cdot B$
+    \vspace{1cm}
+\end{minipage}
+
+Luego de esto, en otro circuito llamado \texttt{T0}, creé 2 pins de 4 bits cada uno, y conecté cada bit de ambos pins en uno de los 4 circuitos \texttt{amasb} que había disponibles, cuyas salidas eran, de izquierda a derecha, $[O_3,O_2,O_1,O_0]$. Cabe mencionar que la entrada del primer circuito \texttt{amasb} (la suma de los bits menos significativos) recibe una constante de valor 0 en todo momento, mientras que, para efectos de la tarea, el resultado del carry de la suma del bit más significativo no tiene ninguna salida, por lo que queda sin efecto. De esta forma, el circuito final quedará así:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=7cm]{Imagenes/t0.png}
+    \caption{Circuito final de \texttt{T0}.}
+    \label{fig:t0}
+\end{figure}
+
+\subsection{Desarrollo para cuando T es 1}
+Para el desarrollo del circuito cuando T es igual a 1, separé en dos partes: la función f y la función g. A continuación describiré su creación:
+
+\subsubsection{Función \textit{f(x,y,z)}}
+
+Primeramente y antes de hacer cualquier cosa, se minimiza la función, quedando de la siguiente manera:
+
+\begin{align*}
+    f(x,y,z) =& (x \cdot y \cdot z + \overline{x} \cdot \overline{y} + \overline{y} \cdot \overline{z} + \overline{x} \cdot \overline{z}) \oplus \overline{(x+y+z)}\\
+    f(x,y,z) =& \overline{x} \cdot \overline{y} \cdot z + \overline{x} \cdot \overline{y} \cdot \overline{z} + x \cdot y \cdot z\\
+\end{align*}
+
+Esta minimización la ingresé al analizador de circuitos que ofrece Logisim, y me resultó en la siguiente tabla de verdad y mapa de Karnaugh:
+
+\begin{minipage}{0.48\linewidth}
+        \centering
+        \begin{tabular}{c c c | c}
+            x & y & z & $f$\\ \hline
+            0 & 0 & 0 & 0 \\
+            0 & 0 & 1 & 1 \\
+            0 & 1 & 0 & 1 \\
+            0 & 1 & 1 & 0 \\
+            1 & 0 & 0 & 1 \\
+            1 & 0 & 1 & 0 \\
+            1 & 1 & 0 & 0 \\
+            1 & 1 & 1 & 1 \\
+            
+        \end{tabular}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\linewidth}
+    \begin{center}
+    \vspace{0.5cm}
+        \Large {K-Map de $f$}
+    \end{center}
+    \begin{karnaugh-map}[4][2][1][$y,z$][$x$]
+            \manualterms{0,1,1,0,1,0,0,1}
+            \implicant{1}{1}
+            \implicant{2}{2}
+            \implicant{4}{4}
+            \implicant{7}{7}
+    \end{karnaugh-map}
+    \centering $f = \overline{x} \cdot \overline{y} \cdot z + \overline{x} \cdot \overline{y} \cdot \overline{z} + x \cdot y \cdot z$
+\end{minipage}\\
+
+\subsubsection{Función \textit{g(w,x,y,z)}}
+
+La función \textit{g(w,x,y,z)} proviene de la función \textit{f(x,y,z)} ya vista, con la diferencia de que $w$ es una variable que, en caso de valer 1, niega toda la expresión. Esto, es representable de la siguiente forma:
+
+\begin{align*}
+    g(w,x,y,z) = \overline{w}\overline{x} \overline{y} z + \overline{w} \overline{x} y \overline{z} + \overline{w} x \overline{y} \overline{z} + \overline{w} x y z + w \overline{x} \overline{y} \overline{z} + w \overline{x} y z + w x  \overline{y} z + w x y \overline{z}
+\end{align*}
+
+En la práctica, básicamente se ingresan $x$, $y$ y $z$ al circuito $f$, y su resultado es combinado con $w$ mediante el uso de un XOR. La tabla de verdad y Mapa de Karnaugh correspondientes son los siguientes:
+
+\begin{minipage}{0.48\linewidth}
+        \centering
+        \begin{tabular}{c c c c | c}
+            w & x & y & z & $g$\\ \hline
+            0 & 0 & 0 & 0 & 0 \\
+            0 & 0 & 0 & 1 & 1 \\
+            0 & 0 & 1 & 0 & 1 \\
+            0 & 0 & 1 & 1 & 0 \\
+            0 & 1 & 0 & 0 & 1 \\
+            0 & 1 & 0 & 1 & 0 \\
+            0 & 1 & 1 & 0 & 0 \\
+            0 & 1 & 1 & 1 & 1 \\
+            1 & 0 & 0 & 0 & 1 \\
+            1 & 0 & 0 & 1 & 0 \\
+            1 & 0 & 1 & 0 & 0 \\
+            1 & 0 & 1 & 1 & 1 \\
+            1 & 1 & 0 & 0 & 0 \\
+            1 & 1 & 0 & 1 & 1 \\
+            1 & 1 & 1 & 0 & 1 \\
+            1 & 1 & 1 & 1 & 0 \\
+        \end{tabular}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\linewidth}
+    \begin{center}
+    \vspace{0.5cm}
+        \Large {K-Map de $g$}
+    \end{center}
+    \begin{karnaugh-map}[4][4][1][$y,z$][$w,x$]
+            \manualterms{0,1,1,0,1,0,0,1,1,0,0,1,0,1,1,0}
+            \implicant{1}{1}
+            \implicant{2}{2}
+            \implicant{4}{4}
+            \implicant{7}{7}
+            \implicant{8}{8}
+            \implicant{11}{11}
+            \implicant{13}{13}
+            \implicant{14}{14}
+    \end{karnaugh-map}
+    \centering $g = \overline{w}\overline{x} \overline{y} z + \overline{w} \overline{x} y \overline{z} + \overline{w} x \overline{y} \overline{z} + \overline{w} x y z + w \overline{x} \overline{y} \overline{z} + w \overline{x} y z + w x  \overline{y} z + w x y \overline{z}$
+    \vspace{0.5cm}
+\end{minipage}\\
+Con todas estas funciones, ya podemos crear el circuito principal cuando T vale 1. Este se compondrá de $[O_0,O_1,O_2,O_3]$, donde cada salida se especifica como una de las siguientes funciones:
+\begin{minipage}{0.48\linewidth}
+\vspace{0.25cm}
+\begin{itemize}
+    \item $O_0 = f(x_A,y_A,z_A)$
+    \item $O_1 = g(w_A,x_A,y_A,z_A)$
+    \end{itemize}
+    \vspace{0.25cm}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\linewidth}
+\vspace{0.25cm}
+\begin{itemize}
+    \item $O_2 = f(x_B,y_B,z_B)$
+    \item $O_3 = g(w_B,x_B,y_B,z_B)$
+\end{itemize}
+\vspace{0.25cm}
+\end{minipage}
+
+Por ende, el circuito estará dado por 2 entradas de 4 bits (A y B), cuyos bits estarán conectados a las entradas de sus funciones correspondientes:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=6cm]{Imagenes/t1.png}
+    \caption{Circuito combinacional cuando T=1.}
+    \label{fig:t1}
+\end{figure}
+\subsection{Conversión a Hexadecimal}
+
+Para la conversión a Hexadecimal, creé otro circuito, que recibe 4 bits, que son los resultantes del circuito T0 o el de T1. Antes de adentrarme en tablas y mapas, qusiera explicar un poco mi forma de ver este ejercicio.\\
+
+De partida, hice una tabla de verdad manualmente, que tuviera como bien dije los 4 bits, y que tuviese 7 salidas. Dicha cantidad de salidas proviene de, por así decirlo, la simplificación de las luces LED. Cada trío de luces es representado por una salida del circuito conversor. De forma más gráfica:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=4cm]{Imagenes/hex.png}
+    \caption{Luces LED separadas por bit de salida de la función conversora.}
+    \label{fig:ledoriginal}
+\end{figure}
+
+Dicho esto, los tríos de LEDs que se deben prender tienen que tener una salida de valor 1. Representado en una tabla:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c c c c | c c c c c c c}
+        $O_0$ & $O_1$ & $O_2$ & $O_3$ & $H_6$ & $H_5$ & $H_4$ & $H_3$ & $H_2$ & $H_1$ & $H_0$  \\ \hline
+        0  & 0  & 0  & 0  & 1  & 1  & 1  & 1  & 1  & 1  & 0  \\
+        0  & 0  & 0  & 1  & 0  & 1  & 1  & 0  & 0  & 0  & 0  \\
+        0  & 0  & 1  & 0  & 1  & 1  & 0  & 1  & 1  & 0  & 1  \\
+        0  & 0  & 1  & 1  & 1  & 1  & 1  & 1  & 0  & 0  & 1  \\
+        0  & 1  & 0  & 0  & 0  & 1  & 1  & 0  & 0  & 1  & 1  \\
+        0  & 1  & 0  & 1  & 1  & 0  & 1  & 1  & 0  & 1  & 1  \\
+        0  & 1  & 1  & 0  & 1  & 0  & 1  & 1  & 1  & 1  & 1  \\
+        0  & 1  & 1  & 1  & 1  & 1  & 1  & 0  & 0  & 0  & 0  \\
+        1  & 0  & 0  & 0  & 1  & 1  & 1  & 1  & 1  & 1  & 1  \\
+        1  & 0  & 0  & 1  & 1  & 1  & 1  & 1  & 0  & 1  & 1  \\
+        1  & 0  & 1  & 0  & 1  & 1  & 1  & 0  & 1  & 1  & 1  \\
+        1  & 0  & 1  & 1  & 0  & 0  & 1  & 1  & 1  & 1  & 1  \\
+        1  & 1  & 0  & 0  & 1  & 0  & 0  & 1  & 1  & 1  & 0  \\
+        1  & 1  & 0  & 1  & 0  & 1  & 1  & 1  & 1  & 0  & 1  \\
+        1  & 1  & 1  & 0  & 1  & 0  & 0  & 1  & 1  & 1  & 1  \\
+        1  & 1  & 1  & 1  & 1  & 0  & 0  & 0  & 1  & 1  & 1  \\
+    \end{tabular}
+    \caption{Tabla de Verdad de conversión a hexadecimal.}
+    \label{tab:hexa}
+\end{table}
+
+\begin{minipage}{0.48\linewidth}
+        \begin{center}
+    \vspace{0.5cm}
+        \Large {K-Map de $H_6$}
+    \end{center}
+    \begin{karnaugh-map}[4][4][1][$O_2,O_3$][$O_0,O_1$]
+            \manualterms{1,0,1,1,0,1,1,1,1,1,1,0,1,0,1,1}
+            \implicant{5}{7}
+            \implicant{3}{6}
+            \implicant{7}{14}
+            \implicantcorner
+            \implicantedge{12}{8}{14}{10}
+    \end{karnaugh-map}
+    \centering $H_6 = \overline{O_1O_3}+\overline{O_0}O_2+\overline{O_0}O_1O_3+ O_1O_2+O_0\overline{O_1O_2}+O_0\overline{O_3}$
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\linewidth}
+    \begin{center}
+    \vspace{0.5cm}
+        \Large {K-Map de $H_5$}
+    \end{center}
+    \begin{karnaugh-map}[4][4][1][$O_2,O_3$][$O_0,O_1$]
+            \manualterms{1,1,1,1,1,0,0,1,1,1,1,0,0,1,0,0}
+            \implicant{0}{2}
+            \implicant{0}{4}
+            \implicant{3}{7}
+            \implicant{13}{9}
+            \implicantcorner
+    \end{karnaugh-map}
+    \centering $H_5 = \overline{O_0O_1}+\overline{O_0O_2O_3}$\\ $+\overline{O_1O_3}+\overline{O_0}O_2O_3+O_0\overline{O_2}O_3$
+\end{minipage}\\
+
+\begin{minipage}{0.48\linewidth}
+        \begin{center}
+    \vspace{0.5cm}
+        \Large {K-Map de $H_4$}
+    \end{center}
+    \begin{karnaugh-map}[4][4][1][$O_2,O_3$][$O_0,O_1$]
+            \manualterms{1,1,0,1,1,1,1,1,1,1,1,1,0,1,0,0}
+            \implicant{0}{5}
+            \implicant{1}{7}
+            \implicant{4}{6}
+            \implicant{8}{10}
+            \implicant{1}{9}
+    \end{karnaugh-map}
+    \centering $H_4 = \overline{O_0O_2}+\overline{O_0}O_3+\overline{O_2}O_3+\overline{O_0}O_1+O_0\overline{O_1}$
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\linewidth}
+    \begin{center}
+    \vspace{0.5cm}
+        \Large {K-Map de $H_3$}
+    \end{center}
+    \begin{karnaugh-map}[4][4][1][$O_2,O_3$][$O_0,O_1$]
+            \manualterms{1,0,1,1,0,1,1,0,1,1,0,1,1,1,1,0}
+            \implicantedge{0}{0}{2}{2}
+            \implicant{5}{13}
+            \implicant{6}{14}
+            \implicant{12}{9}
+            \implicantedge{3}{3}{11}{11}
+    \end{karnaugh-map}
+    \centering $H_3 = \overline{O_0O_1O_3} + \overline{O_1}O_2O_3 + O_1\overline{O_2}O_3 $\\ $+O_1O_2\overline{O_3} + O_0\overline{O_2}$
+\end{minipage}\\
+
+\begin{minipage}{0.48\linewidth}
+        \begin{center}
+    \vspace{0.5cm}
+        \Large {K-Map de $H_2$}
+    \end{center}
+    \begin{karnaugh-map}[4][4][1][$O_2,O_3$][$O_0,O_1$]
+            \manualterms{1,0,1,0,0,0,1,0,1,0,1,1,1,1,1,1}
+            \implicant{15}{10}
+            \implicant{2}{10}
+            \implicantcorner
+            \implicant{12}{14}
+    \end{karnaugh-map}
+    \centering $H_2 = \overline{O_1O_3} + O_2\overline{O_3} + O_0O_2 + O_0O_1$
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\linewidth}
+    \begin{center}
+    \vspace{0.5cm}
+        \Large {K-Map de $H_1$}
+    \end{center}
+    \begin{karnaugh-map}[4][4][1][$O_2,O_3$][$O_0,O_1$]
+            \manualterms{1,0,0,0,1,1,1,0,1,1,1,1,1,0,1,1}
+            \implicant{0}{8}
+            \implicantedge{4}{12}{6}{14}
+            \implicant{4}{5}
+            \implicant{8}{10}
+            \implicant{15}{10}
+    \end{karnaugh-map}
+    \centering $H_1 = \overline{O_2O_3} + \overline{O_0}O_1\overline{O_2}+O_1\overline{O_3}+O_0\overline{O_1}+O_0O_2$
+\end{minipage}\\
+
+\begin{minipage}{0.48\linewidth}
+        \begin{center}
+    \vspace{0.5cm}
+        \Large {K-Map de $H_0$}
+    \end{center}
+    \begin{karnaugh-map}[4][4][1][$O_2,O_3$][$O_0,O_1$]
+            \manualterms{0,0,1,1,1,1,1,0,1,1,1,1,0,1,1,1}
+            \implicantedge{3}{2}{11}{10}
+            \implicant{4}{5}
+            \implicant{2}{10}
+            \implicant{13}{11}
+    \end{karnaugh-map}
+    \centering $H_0 = \overline{O_1}O_2+O_2\overline{O_3}+\overline{O_0}O_1\overline{O_2}+O_0\overline{O_1}+O_0O_3$
+    \vspace{0.5cm}
+\end{minipage}
+
+Por último, decidí agregar una quinta entrada, que representara el valor de T, y que estuviera en cada una de las salidas conectada a un AND con el valor saliente del circuito (ver circuito \texttt{conversorHEX}). Con esta conexión, lograría controlar si las luces deben prenderse para cuando T=1 o T=0.\\
+
+Finalmente, llegamos a \texttt{main}, donde todas las funciones convergen para dar el resultado final. Como entradas está T, de 1 bit, y A y B de 4 bits cada una. Cada bit de A y B está conectado a dos subcircuitos: T0 y T1. El circuito que actúe estará dado por el valor de T, ya que T activará o desactivará las luces del conversor hexadecimal conectado a T0 y T1.\\
+
+Posteriormente, ingresé cada bit resultante de la conversión en T0 y T1 a compuertas OR, que luego se conectan a su trío de LEDs correspondiente.\\
+
+ \begin{figure}[h]
+     \centering
+     \includegraphics[width=10cm]{Imagenes/main.png}
+     \caption{Circuito \texttt{main}.}
+     \label{fig:main}
+ \end{figure}
+
+\section{Resultados}
+\begin{minipage}{0.30\linewidth}
+    \begin{tabular}{|l|c|}
+    \hline
+        \texttt{T A B} & LEDs\\ \hline
+        \texttt{0 1101 0001} & \includegraphics[height=1.5cm]{Imagenes/E.png} \\ \hline
+        \texttt{0 0011 0110} & \includegraphics[height=1.5cm]{Imagenes/9.png} \\ \hline
+        \texttt{0 1111 0001} & \includegraphics[height=1.5cm]{Imagenes/0.png} \\ \hline
+    \end{tabular}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+    \begin{tabular}{|l|c|}
+    \hline
+        \texttt{T A B} & LEDs\\ \hline
+        \texttt{0 1001 0001} & \includegraphics[height=1.5cm]{Imagenes/a.png} \\ \hline
+        \texttt{1 1101 0001} & \includegraphics[height=1.5cm]{Imagenes/7.png} \\ \hline
+        \texttt{1 0011 1000} & \includegraphics[height=1.5cm]{Imagenes/1.png} \\ \hline
+    \end{tabular}
+\end{minipage}
+\hfill
+\begin{minipage}{0.25\linewidth}
+    \begin{tabular}{|l|c|}
+    \hline
+        \texttt{T A B} & LEDs\\ \hline
+        \texttt{1 1111 1001} & \includegraphics[height=1.5cm]{Imagenes/a.png} \\ \hline
+        \texttt{1 1001 0111} & \includegraphics[height=1.5cm]{Imagenes/b.png} \\ \hline
+        \texttt{1 0100 1000} & \includegraphics[height=1.5cm]{Imagenes/d.png} \\ \hline
+    \end{tabular}
+\end{minipage}
+\section{Análisis}
+
+Analizando los resultados mostrados en el punto anterior, puedo definir algunas cosas que me parecieron interesantes:
+
+\begin{itemize}
+    \item El uso de multiplexores habría facilitado el cambio de circuito en \texttt{main} cuando T fuese 0 o 1, y no habría tenido que modificar la función \texttt{conversorHEX} para que realizara dicha tarea.
+    \item Existen formas más sencillas -pero prohibidas- de hacer que la tarea fuera visiblemente más estética, como por ejemplo el uso de sumadores.
+    \item El uso de Mapas de Karnaugh y Tablas de Verdad me permitió analizar y estudiar cada circuito de mejor manera.
+    \item Logisim ofrece una herramienta llamada Analizador de circuitos, que permite modificar los circuitos al gusto de cada uno solo dando instrucciones. Es la herramienta que más utilicé para la realización de la tarea, ya que me facilitó la realización de la misma.
+\end{itemize}
+
+\section{Conclusión}
+
+El nivel de completación de la presente tarea es de un 100\% de lo que se pedía. Todos los circuitos potencialmente minimizables fueron minimizados y el circuito en general cumple con todo lo pedido.\\
+
+La importancia de los circuitos combinacionales y los mapas de Karnaugh radica en la simplificación de los problemas de lógica combinacional, ya que ralentizan la resolución de los problemas. Por ejemplo, para esta tarea, los mapas de Karnaugh fueron muy serviciales para la minimización de los circuitos. También cumple para usos en automatización\cite{Map}.
+
+\newpage
+\begin{thebibliography}{X}
+\bibitem{Comb} \textsc{Wikipedia.} \href{https://es.wikipedia.org/wiki/Sistema_combinacional}{Sistemas combinacionales.}
+\bibitem{Sli} \textsc{Solar, M.} Slides sobre Circuitos combinacionales y Mapas de Karnaugh.
+\bibitem{Kar} \textsc{Jacobsson, M.} The Karnaugh Map package.
+\bibitem{Map} \textsc{Brunete, A.} Introducción a la Automatización Industrial, Capítulo 3, Inciso 3, Mapas de Karnaugh.
+\end{thebibliography}
+\end{document}
