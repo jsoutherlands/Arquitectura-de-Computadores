@@ -18,9 +18,7 @@ endmodule
 
 module sumaBits(
   output [7:0] S1,
-  output S0,
-  input [7:0] A, B,
-  input C);
+  input [7:0] A, B);
   
   wire c1, c2, c3, c4, c5, c6, c7;
   
@@ -46,15 +44,13 @@ module sumaBits(
     S1[6], c7,
     A[6], B[6], c6);
   suma s7(
-    S1[7], S0,
+    S1[7],,
     A[7], B[7], c7);
 endmodule
 
 module restaBits(
   output [7:0] S1,
-  output S0,
-  input [7:0] A, B,
-  input C);
+  input [7:0] A, B);
   
   wire c1, c2, c3, c4, c5, c6, c7;
   
@@ -80,7 +76,7 @@ module restaBits(
     S1[6], c7,
     A[6], ~B[6], c6);
   suma s7(
-    S1[7], S0,
+    S1[7],,
     A[7], ~B[7], c7);
 endmodule
 
@@ -139,4 +135,57 @@ module FF(
   D d7(
     Q[7],,
     CLK, D[7]);
+endmodule
+    
+module orBitwise(
+  output [7:0]S,
+  input [7:0]X, PX);
+  
+  or (S[0], X[0], PX[0]);
+  or (S[1], X[1], PX[1]);
+  or (S[2], X[2], PX[2]);
+  or (S[3], X[3], PX[3]);
+  or (S[4], X[4], PX[4]);
+  or (S[5], X[5], PX[5]);
+  or (S[6], X[6], PX[6]);
+  or (S[7], X[7], PX[7]);
+  
+endmodule
+
+module andBitwise(
+  output [7:0]S,
+  input [7:0]X, PX);
+  
+  and (S[0], X[0], PX[0]);
+  and (S[1], X[1], PX[1]);
+  and (S[2], X[2], PX[2]);
+  and (S[3], X[3], PX[3]);
+  and (S[4], X[4], PX[4]);
+  and (S[5], X[5], PX[5]);
+  and (S[6], X[6], PX[6]);
+  and (S[7], X[7], PX[7]);
+  
+endmodule
+    
+
+module SLogic(
+  output reg [7:0] S,
+  input [7:0] X, PX,
+  input [1:0] M);
+  
+  wire [7:0] w1, w2, w3, w4;
+  
+  sumaBits m00(w1, X, PX);
+  restaBits m01(w2, X, PX);
+  orBitwise m10 (w3, X, PX);
+  andBitwise m11 (w4, X, PX);
+  
+  always @ (w1 or w2 or w3 or w4 or M) begin
+    case(M)
+      2'b00 : S <= w1;
+      2'b01 : S <= w2;
+      2'b10 : S <= w3;
+      2'b11 : S <= w4;
+  	endcase
+  end
 endmodule
