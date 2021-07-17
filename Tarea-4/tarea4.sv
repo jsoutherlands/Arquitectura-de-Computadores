@@ -109,8 +109,6 @@ module FF(
   input [7:0]D,
   input CLK);
   
-  //wire w0, w1, w2, w3, w4, w5, w6, w7;
-  
   D d0(
     Q[0],,
     CLK, D[0]);
@@ -188,4 +186,23 @@ module SLogic(
       2'b11 : S <= w4;
   	endcase
   end
+endmodule
+
+module main(
+  output [7:0] S,
+  input [7:0] X,
+  input [1:0] M,
+  input CLK);
+  
+  wire [7:0]w1, w2;
+  
+  FF ff1(
+    w1,
+    X, CLK);
+  FF ff2(
+    w2,
+    w1, ~CLK);
+  SLogic slmain(
+    S,
+    w1, w2, M);
 endmodule
