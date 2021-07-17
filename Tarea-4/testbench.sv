@@ -1,138 +1,51 @@
-/*
-module test;
-  wire [7:0] S1;
-  wire S0;
-  reg [7:0] A, B;
-  reg C;
-  
-  
-  restaBits suma(S1, S0, A, B, C);
-  
-  initial begin
-    $dumpvars(0,test);
-    
-    #5;
-    A = 8'b00110011;
-    B = 8'b00000000;
-    
-    #5
-    
-    $finish;
-  end
-endmodule
-*/
-
-/*
-module test;
-  wire Q, notQ;
-  reg S,R;
-  
-  SR srtest(Q, notQ, S, R);
-  
-  initial begin
-    $dumpvars(0,test);
-    
-    #5
-    
-    S=1'b1;
-    R=1'b0;
-    
-    #5
-    
-    $finish;
-  end
-endmodule
-*/
-/*
-module test;
-  wire Q, notQ;
-  reg CLK, D;
-  
-  D dtest(
-    Q, notQ,
-    CLK, D);
-  
-  initial begin
-    $dumpvars(0,test);
-    
-    #5
-    
-    CLK = 1;
-    D = 0;
-    
-    #5
-    
-    CLK = 1;
-    D = 1;
-    
-    #5
-    
-    CLK = 0;
-    D = 0;
-    
-    #5
-    
-    $finish;
-    
-  end
-endmodule
-*/
-
-/*
-
-module test;
-  wire [7:0] Q;
-  reg [7:0] D;
-  reg CLK;
-  
-  FF fftest(
-    Q,
-    D, CLK);
-  
-  initial begin
-    $dumpvars(0,test);
-    #5
-    
-    CLK = 1;
-    D = 8'b01100110;
-    
-    #5
-    
-    CLK = 0;
-    D = 8'b10000000;
-    
-    #5
-    
-    CLK = 1;
-    D = 8'b11001100;
-    
-    #5
-    
-    $finish;
-    
-  end
-  
-endmodule
-*/
-
 module test;
   wire [7:0] S;
-  reg [7:0] X, PX;
+  reg [7:0] X;
   reg [1:0] M;
+  reg CLK;
   
-  SLogic slogictest(S, X, PX, M);
+  main maintest(S, X, M, CLK);
+  
+  integer i;
   
   initial begin
-    $dumpvars(0, test);
-    #5
+    $dumpvars(0,test);    
+    X = 8'b00000000;
+    M = 2'b00;
     
-    X =  8'b00001000;
-    PX = 8'b00101010;
-    M = 2'b11;
+    #10
     
-    #5
+    X = 8'b00000000;
+    M = 2'b00;
     
-    $finish;
+    #10
+    
+    X = 8'b01010100;
+    M = 2'b00;
+    
+    #10
+    
+    X = 8'b01010100;
+    M = 2'b00;
+    
+    #10
+    
+    X = 8'b10101011;
+    M = 2'b00;
+    
+    #10
+    
+    X = 8'b10101011;
+    M = 2'b00;
   end
   
+  initial begin
+    CLK = 0;
+    for ( i = 0; i<=4; i=i+1)
+      #10 CLK = ~CLK;
+  end
+  
+  initial begin
+    $monitor("CLK=%b, X = %b, M = %b, S = %b\n", CLK, X, M, S);
+  end
 endmodule
