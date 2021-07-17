@@ -114,3 +114,25 @@ module test;
   
 endmodule
 */
+
+module test;
+  wire [7:0] S;
+  reg [7:0] X, PX;
+  reg [1:0] M;
+  
+  SLogic slogictest(S, X, PX, M);
+  
+  initial begin
+    $dumpvars(0, test);
+    #5
+    
+    X =  8'b00001000;
+    PX = 8'b00101010;
+    M = 2'b11;
+    
+    #5
+    
+    $finish;
+  end
+  
+endmodule
