@@ -82,10 +82,10 @@ endmodule
 
 module SR(
   output Q, notQ,
-  input S, R);
+  input R, S);
   
-  nor (Q, S, notQ);
-  nor (notQ, R, Q);
+  nor (Q, R, notQ);
+  nor (notQ, S, Q);
   
 endmodule
 
@@ -189,20 +189,20 @@ module SLogic(
 endmodule
 
 module main(
-  output [7:0] S,
+  output [7:0] S, PX,
   input [7:0] X,
   input [1:0] M,
   input CLK);
   
-  wire [7:0]w1, w2;
+  wire [7:0]w1;
   
   FF ff1(
     w1,
     X, CLK);
   FF ff2(
-    w2,
+    PX,
     w1, ~CLK);
   SLogic slmain(
     S,
-    w1, w2, M);
+    w1, PX, M);
 endmodule
